@@ -1,0 +1,22 @@
+services:
+  m-y-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - "4227:4227" # Node.js gateway / REST API
+      - "5901:5901" # VNC  (native VNC client, e.g. Screen Sharing / RealVNC)
+      - "6080:6080" # noVNC browser UI → http://localhost:6080/vnc.html
+    volumes:
+      # Named volume persists runtime changes to ~/storage across container restarts.
+      # The Dockerfile seeds it with the repo's storage/ contents at build time.
+      - memory:/home/m-y-ai/
+    restart: unless-stopped
+    # Override display/resolution at compose time if needed:
+    # environment:
+    #   - WIDTH=1920
+    #   - HEIGHT=1080
+
+volumes:
+  memory:

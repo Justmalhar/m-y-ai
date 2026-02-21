@@ -1,0 +1,44 @@
+{
+  "name": "m-y-ai",
+  "version": "1.0.0",
+  "description": "A secure 24x7 running personal AI assistant framework - Web, App, Desktop with Claude Agent SDK",
+  "keywords": [
+    "AI",
+    "Agent",
+    "Personal",
+    "AI",
+    "AI",
+    "Assistant"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "www.github.com/justmalhar/m-y-ai"
+  },
+  "license": "MIT",
+  "author": "Malhar Ujawane",
+  "type": "module",
+  "main": "gateway.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "bin": {
+    "m-y-ai": "./cli.js"
+  },
+  "scripts": {
+    "start": "node cli.js start",
+    "chat": "node cli.js chat",
+    "setup": "node cli.js setup",
+    "cli": "node cli.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.2.50",
+    "@opencode-ai/sdk": "^1.2.10",
+    "dotenv": "^17.3.1",
+    "oh-my-logo": "^0.4.0",
+    "pino": "^10.3.1",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0",
+    "ws": "^8.19.0",
+    "zod": "^4.3.6"
+  }
+}

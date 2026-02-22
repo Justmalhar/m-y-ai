@@ -26,7 +26,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           "max-w-[85%] md:max-w-[75%] px-4 py-3 text-sm leading-relaxed",
           isUser
             ? "glass-3 border border-primary/20 rounded-2xl rounded-tr-sm text-foreground"
-            : "glass-2 border border-white/8 rounded-2xl rounded-tl-sm text-foreground border-l-2 border-l-primary/40",
+            : "glass-2 border-t border-r border-b border-white/8 border-l-2 border-l-primary/40 rounded-2xl rounded-tl-sm text-foreground",
           message.isStreaming && "after:content-['▋'] after:ml-0.5 after:opacity-70 after:animate-pulse"
         )}
       >

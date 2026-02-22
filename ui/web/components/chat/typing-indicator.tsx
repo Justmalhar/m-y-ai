@@ -24,10 +24,12 @@ export function TypingIndicator({ visible }: TypingIndicatorProps) {
                 className="w-1.5 h-1.5 rounded-full bg-muted-foreground"
                 animate={{ y: [0, -4, 0] }}
                 transition={{
-                  duration: 0.6,
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 15,
                   repeat: Infinity,
+                  repeatType: "reverse",
                   delay: i * 0.15,
-                  ease: "easeInOut",
                 }}
               />
             ))}

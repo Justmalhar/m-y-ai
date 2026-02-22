@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, KeyboardEvent } from "react"
+import { useRef, useState, useLayoutEffect, KeyboardEvent } from "react"
 import { SendIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CommandPalette } from "./command-palette"
@@ -20,6 +20,11 @@ export function InputBar({ onSend, disabled, placeholder }: InputBarProps) {
   const slashQuery = value.startsWith("/") ? value.slice(1) : ""
   const paletteVisible = showPalette && value.startsWith("/")
 
+  // Resize after React flushes the new value to the DOM
+  useLayoutEffect(() => {
+    autoResize()
+  }, [value])
+
   function autoResize() {
     const el = textareaRef.current
     if (!el) return
@@ -31,7 +36,7 @@ export function InputBar({ onSend, disabled, placeholder }: InputBarProps) {
     const v = e.target.value
     setValue(v)
     setShowPalette(v.startsWith("/") && !v.includes(" "))
-    autoResize()
+    // autoResize() removed — handled by useLayoutEffect above
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {

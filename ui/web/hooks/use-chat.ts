@@ -91,6 +91,7 @@ export function useChat() {
 
       case "error": {
         setIsTyping(false)
+        const orphanId = streamingIdRef.current
         streamingIdRef.current = null
         streamBufferRef.current = ""
         const errMsg: ChatMessage = {
@@ -99,7 +100,10 @@ export function useChat() {
           content: `⚠️ Error: ${frame.message ?? "Unknown error"}`,
           timestamp: Date.now(),
         }
-        setMessages((prev) => [...prev, errMsg])
+        setMessages((prev) => {
+          const filtered = orphanId ? prev.filter((m) => m.id !== orphanId) : prev
+          return [...filtered, errMsg]
+        })
         break
       }
     }

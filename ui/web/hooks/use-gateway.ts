@@ -72,8 +72,8 @@ export function useGateway({ onFrame, enabled = true }: UseGatewayOptions) {
       wsRef.current = null
 
       // Exponential backoff: 1s, 2s, 4s, 8s, max 16s
-      const delay = Math.min(1000 * Math.pow(2, retriesRef.current), 16000)
       retriesRef.current += 1
+      const delay = Math.min(1000 * Math.pow(2, retriesRef.current - 1), 16000)
 
       if (retriesRef.current <= 5) {
         reconnectTimerRef.current = setTimeout(connect, delay)
@@ -109,7 +109,15 @@ export function useGateway({ onFrame, enabled = true }: UseGatewayOptions) {
 
   const reconnect = useCallback(() => {
     retriesRef.current = 0
-    wsRef.current?.close()
+    if (reconnectTimerRef.current) {
+      clearTimeout(reconnectTimerRef.current)
+      reconnectTimerRef.current = null
+    }
+    if (wsRef.current) {
+      wsRef.current.onclose = null
+      wsRef.current.close()
+      wsRef.current = null
+    }
     connect()
   }, [connect])
 

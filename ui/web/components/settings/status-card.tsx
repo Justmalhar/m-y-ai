@@ -13,7 +13,10 @@ export function StatusCard() {
 
   useEffect(() => {
     const wsUrl = process.env.NEXT_PUBLIC_GATEWAY_WS_URL ?? "ws://localhost:4227/ws"
-    const httpUrl = wsUrl.replace(/^wss?/, "http").replace(/\/ws$/, "/")
+    const httpUrl = wsUrl
+      .replace(/^wss:\/\//, "https://")
+      .replace(/^ws:\/\//, "http://")
+      .replace(/\/ws$/, "/")
 
     fetch(httpUrl)
       .then((r) => setInfo({ ok: r.ok }))

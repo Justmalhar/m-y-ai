@@ -10,7 +10,11 @@ import { Input } from "@/components/ui/input"
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirect = searchParams.get("redirect") ?? "/chat"
+  const rawRedirect = searchParams.get("redirect") ?? ""
+  // Only allow relative paths that start with / but not //
+  const redirect = rawRedirect.startsWith("/") && !rawRedirect.startsWith("//")
+    ? rawRedirect
+    : "/chat"
 
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")

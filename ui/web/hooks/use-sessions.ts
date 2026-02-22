@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 
 export interface StoredSession {
   id: string        // UUID == URL sessionId
@@ -27,11 +27,7 @@ function saveSessions(sessions: StoredSession[]) {
 }
 
 export function useSessions() {
-  const [sessions, setSessions] = useState<StoredSession[]>([])
-
-  useEffect(() => {
-    setSessions(loadSessions())
-  }, [])
+  const [sessions, setSessions] = useState<StoredSession[]>(() => loadSessions())
 
   const upsertSession = useCallback((session: StoredSession) => {
     setSessions((prev) => {

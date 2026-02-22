@@ -36,6 +36,7 @@ export function SidebarSessionItem({ session, onDelete }: SidebarSessionItemProp
         type="button"
         onClick={(e) => {
           e.preventDefault()
+          e.stopPropagation()
           onDelete(session.id)
         }}
         className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 p-0.5 rounded hover:text-destructive"

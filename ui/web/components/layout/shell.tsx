@@ -1,3 +1,5 @@
+"use client"
+
 import { Sidebar } from "./sidebar"
 import { MobileHeader } from "./mobile-header"
 

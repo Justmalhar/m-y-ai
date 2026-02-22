@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import { MenuIcon, BotIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sidebar } from "./sidebar"
@@ -8,6 +9,12 @@ import { motion, AnimatePresence } from "framer-motion"
 
 export function MobileHeader() {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+
+  // Close sidebar on route navigation
+  useEffect(() => {
+    setOpen(false)
+  }, [pathname])
 
   return (
     <>

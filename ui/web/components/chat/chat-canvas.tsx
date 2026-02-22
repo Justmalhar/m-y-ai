@@ -15,7 +15,7 @@ import type { StoredSession } from "@/hooks/use-sessions"
 interface ChatCanvasProps {
   sessionId: string
   session: StoredSession | null
-  onSessionUpdate: (updates: Partial<StoredSession>) => void
+  onSessionUpdate: (id: string, updates: Partial<StoredSession>) => void
 }
 
 export function ChatCanvas({ sessionId, session, onSessionUpdate }: ChatCanvasProps) {
@@ -28,10 +28,10 @@ export function ChatCanvas({ sessionId, session, onSessionUpdate }: ChatCanvasPr
 
   // Save chatId to session when assigned
   useEffect(() => {
-    if (chatId && session && !session.chatId) {
-      onSessionUpdate({ chatId })
+    if (chatId && (!session || !session.chatId)) {
+      onSessionUpdate(sessionId, { chatId })
     }
-  }, [chatId, session, onSessionUpdate])
+  }, [chatId, session, onSessionUpdate, sessionId])
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -45,19 +45,22 @@ export function ChatCanvas({ sessionId, session, onSessionUpdate }: ChatCanvasPr
     addUserMessage(text)
     sendMessage(text)
 
-    // Update session title from first message
     if (!session?.title) {
-      onSessionUpdate({
+      onSessionUpdate(sessionId, {
         title: text.slice(0, 60),
         lastMessage: text.slice(0, 80),
         updatedAt: Date.now(),
       })
     } else {
-      onSessionUpdate({ lastMessage: text.slice(0, 80), updatedAt: Date.now() })
+      onSessionUpdate(sessionId, {
+        lastMessage: text.slice(0, 80),
+        updatedAt: Date.now(),
+      })
     }
   }
 
   const isEmpty = messages.length === 0
+  const isDisconnected = status === "disconnected" || status === "error"
 
   return (
     <div className="flex flex-col h-full">
@@ -78,17 +81,22 @@ export function ChatCanvas({ sessionId, session, onSessionUpdate }: ChatCanvasPr
 
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 md:px-8 py-6">
-        {isEmpty && status === "connected" && <EmptyState />}
-        {(status === "disconnected" || status === "error") && (
+        {/* Disconnected takes priority over empty state */}
+        {isDisconnected ? (
           <DisconnectedState onReconnect={reconnect} />
-        )}
+        ) : isEmpty ? (
+          <EmptyState />
+        ) : null}
 
-        <div className="flex flex-col gap-4 max-w-3xl mx-auto">
-          {messages.map((msg) => (
-            <MessageBubble key={msg.id} message={msg} />
-          ))}
-          <TypingIndicator visible={isTyping} />
-        </div>
+        {/* Always render messages if present */}
+        {!isEmpty && (
+          <div className="flex flex-col gap-4 max-w-3xl mx-auto">
+            {messages.map((msg) => (
+              <MessageBubble key={msg.id} message={msg} />
+            ))}
+            <TypingIndicator visible={isTyping} />
+          </div>
+        )}
       </div>
 
       {/* Input */}

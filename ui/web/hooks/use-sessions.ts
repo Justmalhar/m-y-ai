@@ -55,10 +55,37 @@ export function useSessions() {
     })
   }, [])
 
+  const updateSession = useCallback((id: string, updates: Partial<StoredSession>) => {
+    setSessions((prev) => {
+      const idx = prev.findIndex((s) => s.id === id)
+      if (idx < 0) {
+        // Session doesn't exist yet — create a minimal one with the updates
+        const newSession: StoredSession = {
+          id,
+          chatId: "",
+          title: "",
+          createdAt: Date.now(),
+          lastMessage: "",
+          updatedAt: Date.now(),
+          ...updates,
+        }
+        const next = [newSession, ...prev]
+        saveSessions(next)
+        return next
+      }
+      const next = prev.map((s, i) =>
+        i === idx ? { ...s, ...updates, updatedAt: updates.updatedAt ?? Date.now() } : s
+      )
+      next.sort((a, b) => b.updatedAt - a.updatedAt)
+      saveSessions(next)
+      return next
+    })
+  }, [])
+
   const getSession = useCallback(
     (id: string) => sessions.find((s) => s.id === id) ?? null,
     [sessions]
   )
 
-  return { sessions, upsertSession, deleteSession, getSession }
+  return { sessions, upsertSession, updateSession, deleteSession, getSession }
 }

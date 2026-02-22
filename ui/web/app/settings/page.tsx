@@ -10,8 +10,11 @@ export default function SettingsPage() {
   const router = useRouter()
 
   async function handleLogout() {
-    await fetch("/api/auth/logout", { method: "POST" })
-    router.replace("/login")
+    try {
+      await fetch("/api/auth/logout", { method: "POST" })
+    } finally {
+      router.replace("/login")
+    }
   }
 
   return (

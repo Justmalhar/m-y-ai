@@ -1,30 +1,29 @@
 const parseList = (env) => env ? env.split(',').map(s => s.trim()).filter(Boolean) : []
+const parseBool = (env, fallback = true) => env === undefined ? fallback : env !== 'false' && env !== '0'
 
 export default {
     agentId: 'm-y-ai',
 
     web: {
-        enabled: true,
-        allowedDMs: parseList(process.env.WHATSAPP_ALLOWED_DMS),       // phone numbers, or '*' for all
-        allowedGroups: parseList(process.env.WHATSAPP_ALLOWED_GROUPS),  // group JIDs
-        respondToMentionsOnly: true
-    },
-
-    desktop: {
-        enabled: false,
-        allowedDMs: parseList(process.env.IMESSAGE_ALLOWED_DMS),       // chat IDs, or '*' for all
-        allowedGroups: parseList(process.env.IMESSAGE_ALLOWED_GROUPS),
+        enabled: parseBool(process.env.WEB_ENABLED, true),
+        allowedDMs: parseList(process.env.WEB_ALLOWED_DMS),       // client IDs, or '*' for all
+        allowedGroups: parseList(process.env.WEB_ALLOWED_GROUPS),
         respondToMentionsOnly: true
     },
 
     app: {
-        enabled: true,
-        token: process.env.TELEGRAM_BOT_TOKEN || '',
-        allowedDMs: parseList(process.env.TELEGRAM_ALLOWED_DMS),       // user IDs, or '*' for all
-        allowedGroups: parseList(process.env.TELEGRAM_ALLOWED_GROUPS),
+        enabled: parseBool(process.env.APP_ENABLED, true),
+        allowedDMs: parseList(process.env.APP_ALLOWED_DMS),       // client IDs, or '*' for all
+        allowedGroups: parseList(process.env.APP_ALLOWED_GROUPS),
         respondToMentionsOnly: true
     },
 
+    desktop: {
+        enabled: parseBool(process.env.DESKTOP_ENABLED, false),
+        allowedDMs: parseList(process.env.DESKTOP_ALLOWED_DMS),   // client IDs, or '*' for all
+        allowedGroups: parseList(process.env.DESKTOP_ALLOWED_GROUPS),
+        respondToMentionsOnly: true
+    },
 
     // Agent configuration
     agent: {
